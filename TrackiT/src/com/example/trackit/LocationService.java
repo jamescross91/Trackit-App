@@ -20,7 +20,7 @@ public class LocationService extends Service implements LocationListener{
 	private Notification notif;
 	private NotificationCompat.Builder notifBuilder;
 	
-	private LocationManager locManager;
+	protected LocationManager locManager;
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -30,12 +30,12 @@ public class LocationService extends Service implements LocationListener{
 	
 	@Override
 	public void onCreate(){
-		Toast msg = Toast.makeText(this, "Location service CREATED!", Toast.LENGTH_LONG);
-		msg.show();
+		Toast.makeText(this, "Location service CREATED!", Toast.LENGTH_LONG).show();
 		Log.e("LocationService", "Hello from the service!!");
 		setupNotif();
 		super.onCreate();
-		System.out.println("GPS Service");
+
+		setupLocationListener();	
 	}
 	
 	@Override
@@ -47,7 +47,9 @@ public class LocationService extends Service implements LocationListener{
 	
 	private void setupLocationListener(){
 		locManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		
+				
+		locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+//		locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
 	}
 	
 	private void setupNotif(){
@@ -68,23 +70,30 @@ public class LocationService extends Service implements LocationListener{
 	}
 
 	public void onLocationChanged(Location location) {
-		// TODO Auto-generated method stub
+		double lat = location.getLatitude();
+		double lng = location.getLongitude();
+		Toast.makeText(this, "Lat: " + lat + " Long: " + lng, Toast.LENGTH_LONG).show();
 		
+		Intent intent = new Intent("TrackiTLoc");
+		Bundle b = new Bundle();
+		b.putDouble("GEO_LONG", lng);
+		b.putDouble("GEO_LAT", lat);
+		
+		intent.putExtras(b);
+		sendBroadcast(intent);
 	}
 
 	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
-		
+		Toast.makeText(this, "TrackiT location services disabled - alerting parents!", Toast.LENGTH_LONG).show();
+		//TODO Alert parents
 	}
 
 	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
-		
+		Toast.makeText(this, "New TrackiT location service enabled", Toast.LENGTH_LONG).show();
 	}
 
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
-		
+		// TODO Auto-generated method stub	
 	}
 
 }

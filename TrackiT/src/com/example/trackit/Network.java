@@ -7,7 +7,6 @@ import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

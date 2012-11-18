@@ -1,7 +1,5 @@
 package com.example.trackit;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
