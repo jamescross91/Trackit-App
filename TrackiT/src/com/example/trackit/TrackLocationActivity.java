@@ -33,13 +33,14 @@ public class TrackLocationActivity extends MapActivity {
 		mapView.setBuiltInZoomControls(true);
 
 		mapOverlays = mapView.getOverlays();
-		
+
 		drawable = this.getResources().getDrawable(R.drawable.marker);
 		itemizedOverlay = new MapOverlay(drawable, this);
-		
-		GeoPoint point = new GeoPoint(19240000,-99120000);
-		OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
-		
+
+		GeoPoint point = new GeoPoint(19240000, -99120000);
+		OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!",
+				"I'm in Mexico City!");
+
 		itemizedOverlay.addOverlay(overlayitem);
 		mapOverlays.add(itemizedOverlay);
 	}
@@ -47,7 +48,7 @@ public class TrackLocationActivity extends MapActivity {
 	@Override
 	protected void onPause() {
 		super.onPause();
-		unregisterReceiver(receiver);		
+		unregisterReceiver(receiver);
 	}
 
 	@Override
@@ -66,20 +67,22 @@ public class TrackLocationActivity extends MapActivity {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("TrackiTLoc")) {
-				Toast.makeText(context,
-						"Loc update hit the reciever in the map activity",
-						Toast.LENGTH_LONG).show();
-				
+
 				double lng = intent.getExtras().getDouble("GEO_LONG");
-				double lat = intent.getExtras().getDouble("GEO_LAT");	
-				
-				GeoPoint point = new GeoPoint((int)(lat * 1E6),(int) (lng * 1E6));
-				OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
-				
+				double lat = intent.getExtras().getDouble("GEO_LAT");
+
+				GeoPoint point = new GeoPoint((int) (lat * 1E6),
+						(int) (lng * 1E6));
+				OverlayItem overlayitem = new OverlayItem(point,
+						"Hola, Mundo!", "I'm in Mexico City!");
+
 				itemizedOverlay.addOverlay(overlayitem);
 				mapOverlays.add(itemizedOverlay);
-				
+
 				mapView.invalidate();
+
+				Toast.makeText(context, "New location added to the map",
+						Toast.LENGTH_LONG).show();
 			}
 		}
 	};

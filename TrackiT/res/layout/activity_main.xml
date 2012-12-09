@@ -3,13 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:onClick="login"
+        android:text="@string/login_button_text" />
+
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/edit_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="88dp"
+        android:layout_marginTop="58dp"
         android:ems="10"
         android:inputType="textPersonName" >
 
@@ -17,23 +26,14 @@
     </EditText>
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/edit_pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/editText1"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp"
+        android:layout_alignLeft="@+id/edit_user"
+        android:layout_alignRight="@+id/edit_user"
+        android:layout_below="@+id/edit_user"
+        android:layout_marginTop="29dp"
         android:ems="10"
         android:inputType="textPassword" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android::onClick="login"
-        android:text= "@string/login_button_text" />
-    
 
 </RelativeLayout>

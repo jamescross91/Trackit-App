@@ -53,6 +53,7 @@ public class Login extends Network {
 		telManager = (TelephonyManager) thisContext
 				.getSystemService(Context.TELEPHONY_SERVICE);
 
+		//TODO use a JSON object instead
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("username", username));
 		pairs.add(new BasicNameValuePair("password", password));
