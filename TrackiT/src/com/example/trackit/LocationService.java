@@ -54,10 +54,10 @@ public class LocationService extends Service implements LocationListener {
 	private void setupLocationListener() {
 		locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-		locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0,
+		locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0,
 				this);
 
-		locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000,
+		locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000,
 				0, this);
 	}
 

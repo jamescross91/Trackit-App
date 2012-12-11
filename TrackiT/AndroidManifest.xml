@@ -15,14 +15,14 @@
         android:targetSdkVersion="15" />
 
     <application>
-        <service android:name="LocationService" >
+        android:icon="@drawable/icon"
+        android:label="@string/TrackiT"
+        android:theme="@style/AppTheme" >    <service android:name="LocationService" >
             <intent-filter>
                 <action android:name="com.example.trackit.LocationService" />
             </intent-filter>
         </service>
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" >
@@ -57,7 +57,7 @@
             android:name=".LocationUpdateReciever"
             android:enabled="true" >
         </receiver>
-        android:screenOrientation="portrait"
+        android:screenOrientation="portrait"
     </application>
 
 </manifest>
