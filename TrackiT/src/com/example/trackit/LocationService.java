@@ -51,14 +51,17 @@ public class LocationService extends Service implements LocationListener {
 		// disabled
 	}
 
+	//Check the location providers are available and if they are register listeners for each of them
 	private void setupLocationListener() {
 		locManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-		locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0,
-				this);
+		if (locManager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+			locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+					60000, 50, this);
 
-		locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000,
-				0, this);
+		if (locManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER))
+			locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+					60000, 50, this);
 	}
 
 	private void setupNotif() {
@@ -68,7 +71,7 @@ public class LocationService extends Service implements LocationListener {
 
 		notifBuilder.setContentTitle("TrackiT Location");
 		notifBuilder.setContentText("Some application information");
-		notifBuilder.setSmallIcon(R.drawable.notif_icon);
+		notifBuilder.setSmallIcon(R.drawable.icon);
 		notifBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
 
 		notif = notifBuilder.build();

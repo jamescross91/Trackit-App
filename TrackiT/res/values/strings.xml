@@ -11,5 +11,6 @@
     <string name="location_url">/device/child/location</string>
     <string name="authentication">authentication</string>
     <string name="title_activity_track_location">Track Location</string>
+    <string name="trackit">TrackiT</string>
 
 </resources>
