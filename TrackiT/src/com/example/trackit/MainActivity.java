@@ -9,7 +9,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
 
@@ -49,18 +51,13 @@ public class MainActivity extends Activity {
 		String username = editUsername.getText().toString();
 		String password = editPassword.getText().toString();
 
-		Login login = new Login(this, username, password);
+		Button loginButton = (Button) findViewById(R.id.button1);
+		ProgressBar bar = (ProgressBar) findViewById(R.id.progressBar1);
+		
+		Login login = new Login(this, username, password, bar, editUsername, editPassword, loginButton);
 		String[] array = new String[10];
+		
 		login.execute(array);
-
-		SharedPreferences auth = getSharedPreferences(
-				getString(R.string.authentication), 0);
-		boolean authenticated = auth.getBoolean("authenticated", false);
-
-		if (authenticated) {
-			Intent intent = new Intent(this, TrackLocationActivity.class);
-			startActivity(intent);
-		}
 	}
 	
 	private boolean isServiceRunning(){

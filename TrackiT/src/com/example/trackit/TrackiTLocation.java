@@ -39,7 +39,7 @@ public class TrackiTLocation extends Network {
 	}
 	
 	private void persistLocation(){
-		HttpClient client = new DefaultHttpClient();
+		HttpClient client = new MyHttpClient(thisContext);
 		HttpParams params = client.getParams();
 		HttpConnectionParams.setConnectionTimeout(params, 2000);
 		HttpConnectionParams.setSoTimeout(params, 1000);
