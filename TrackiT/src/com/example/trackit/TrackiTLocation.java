@@ -3,15 +3,8 @@ package com.example.trackit;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.location.Location;
@@ -39,13 +32,6 @@ public class TrackiTLocation extends Network {
 	}
 	
 	private void persistLocation(){
-		HttpClient client = new MyHttpClient(thisContext);
-		HttpParams params = client.getParams();
-		HttpConnectionParams.setConnectionTimeout(params, 2000);
-		HttpConnectionParams.setSoTimeout(params, 1000);
-		
-		HttpPost post = new HttpPost(formatLocUrl());
-		post.setHeader("User-Agent", "Custom Header");
 		
 		TelephonyManager telManager;
 		telManager = (TelephonyManager) thisContext
@@ -60,12 +46,7 @@ public class TrackiTLocation extends Network {
 		pairs.add(new BasicNameValuePair("speed", String.valueOf(speed)));		
 		pairs.add(new BasicNameValuePair("deviceID", telManager.getDeviceId()));
 		
-		try{
-			post.setEntity(new UrlEncodedFormEntity(pairs));
-			client.execute(post);
-		} catch (Exception e){
-			e.printStackTrace();
-		}
+		networkExec(formatLocUrl(), pairs);
 	}
 	
 	private String formatLocUrl(){

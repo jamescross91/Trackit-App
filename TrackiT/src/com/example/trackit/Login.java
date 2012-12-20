@@ -1,24 +1,17 @@
 package com.example.trackit;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import android.app.ActivityManager;
-import android.app.AlertDialog;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,7 +33,8 @@ public class Login extends Network {
 	private Button loginButton;
 
 	public Login(Context context, String username, String password,
-			ProgressBar bar, EditText userField, EditText passField, Button loginButton) {
+			ProgressBar bar, EditText userField, EditText passField,
+			Button loginButton) {
 		super(context);
 		this.username = username;
 		this.password = password;
@@ -51,22 +45,6 @@ public class Login extends Network {
 	}
 
 	public HttpResponse authenticateLogin() {
-		HashMap<String, Object> result = new HashMap<String, Object>();
-		HttpResponse response = null;
-
-		if (!isConnected()) {
-			result.put("Connection status", false);
-			result.put("Error cause", "Unable to connect to the internet");
-		}
-
-		HttpClient client = new MyHttpClient(thisContext);
-		HttpParams params = client.getParams();
-		HttpConnectionParams.setConnectionTimeout(params, 2000);
-		HttpConnectionParams.setSoTimeout(params, 1000);
-
-		HttpPost post = new HttpPost(formatLoginURL());
-		post.setHeader("User-Agent", "Custom Header");
-
 		TelephonyManager telManager;
 		telManager = (TelephonyManager) thisContext
 				.getSystemService(Context.TELEPHONY_SERVICE);
@@ -81,15 +59,7 @@ public class Login extends Network {
 		pairs.add(new BasicNameValuePair("phoneNumber", "0"));
 		pairs.add(new BasicNameValuePair("deviceID", telManager.getDeviceId()));
 
-		try {
-			post.setEntity(new UrlEncodedFormEntity(pairs));
-			response = client.execute(post);
-
-		} catch (Exception e) {
-			Log.e("Login", "Error executing HTTP Request: " + e.toString());
-			e.printStackTrace();
-		}
-		return response;
+		return networkExec(formatLoginURL(), pairs);
 	}
 
 	private String formatLoginURL() {
@@ -135,15 +105,18 @@ public class Login extends Network {
 
 		return true;
 	}
-	
-	private boolean isServiceRunning(){
-		ActivityManager manager = (ActivityManager) thisContext.getSystemService(Context.ACTIVITY_SERVICE);
-		
-		for(RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
-			if(LocationService.class.getName().equals(service.service.getClassName()))
+
+	private boolean isServiceRunning() {
+		ActivityManager manager = (ActivityManager) thisContext
+				.getSystemService(Context.ACTIVITY_SERVICE);
+
+		for (RunningServiceInfo service : manager
+				.getRunningServices(Integer.MAX_VALUE)) {
+			if (LocationService.class.getName().equals(
+					service.service.getClassName()))
 				return true;
 		}
-		
+
 		return false;
 	}
 
@@ -171,12 +144,13 @@ public class Login extends Network {
 		boolean authenticated = auth.getBoolean("authenticated", false);
 
 		if (authenticated) {
-			//If the location service is not already running, run it!
-			if(!isServiceRunning()){
-				Intent serviceIntent = new Intent(thisContext, LocationService.class);
+			// If the location service is not already running, run it!
+			if (!isServiceRunning()) {
+				Intent serviceIntent = new Intent(thisContext,
+						LocationService.class);
 				thisContext.startService(serviceIntent);
 			}
-			
+
 			Intent intent = new Intent(thisContext, TrackLocationActivity.class);
 			thisContext.startActivity(intent);
 		} else {
@@ -195,7 +169,7 @@ public class Login extends Network {
 
 			AlertDialog alertDialog = alertDialogBuilder.create();
 			alertDialog.show();
-			
+
 			userField.setVisibility(View.VISIBLE);
 			passField.setVisibility(View.VISIBLE);
 			loginButton.setVisibility(View.VISIBLE);
@@ -203,14 +177,3 @@ public class Login extends Network {
 		}
 	}
 }
-
-// protected HashMap<String, Object> formatResult(){
-// HashMap<String, Object> result = new HashMap<String, Object>();
-//
-// //State of the connection to the target host
-// result.put("Connection status", false);
-// result.put("Error reason", "");
-// result.put("Payload size", 0.0);
-//
-// return result;
-// }

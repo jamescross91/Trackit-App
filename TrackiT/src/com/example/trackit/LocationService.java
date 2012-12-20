@@ -5,11 +5,8 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -20,9 +17,6 @@ import android.widget.Toast;
 
 import com.commonsware.cwac.locpoll.LocationPoller;
 import com.commonsware.cwac.locpoll.LocationPollerParameter;
-import com.commonsware.cwac.locpoll.LocationPollerResult;
-import com.google.android.maps.GeoPoint;
-import com.google.android.maps.OverlayItem;
 
 public class LocationService extends Service {
 

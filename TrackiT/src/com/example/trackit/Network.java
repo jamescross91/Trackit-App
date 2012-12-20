@@ -1,12 +1,15 @@
 package com.example.trackit;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -14,7 +17,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class Network extends AsyncTask<String, Void, String> {
+public abstract class Network extends AsyncTask<String, Void, String> {
 	protected Context thisContext;
 
 	public Network(Context context) {
@@ -34,45 +37,36 @@ public class Network extends AsyncTask<String, Void, String> {
 			return false;
 	}
 
-	private void testDownload() {
-		InputStream is = null;
-		int len = 500;
-		if (isConnected()) {
-			try {
-				URL url = new URL("http://5.126.59.12:2610/device/child/location");
-				HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-				conn.setReadTimeout(10000);
-				conn.setConnectTimeout(15000);
-				conn.setRequestMethod("GET");
-				conn.setDoInput(true);
-				
-				conn.connect();
-				int response = conn.getResponseCode();
-				Log.d(this.getClass().getName(), "The response is: " + response);
-				is = conn.getInputStream();
-				
-				String contentAsString = readIt(is, len);
-				System.out.println(contentAsString);
-			
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	public HttpResponse networkExec(String URL, List<NameValuePair> pairs) {
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		HttpResponse response = null;
+
+		if (!isConnected()) {
+			result.put("Connection status", false);
+			result.put("Error cause", "Unable to connect to the internet");
 		}
-	}
-	
-	private String readIt(InputStream stream, int len) throws IOException, UnsupportedEncodingException {
-	    Reader reader = null;
-	    reader = new InputStreamReader(stream, "UTF-8");        
-	    char[] buffer = new char[len];
-	    reader.read(buffer);
-	    return new String(buffer);
+
+		HttpClient client = new MyHttpClient(thisContext);
+		HttpParams params = client.getParams();
+		HttpConnectionParams.setConnectionTimeout(params, 2000);
+		HttpConnectionParams.setSoTimeout(params, 1000);
+
+		HttpPost post = new HttpPost(URL);
+		post.setHeader("User-Agent", "Custom Header");
+
+		try {
+			post.setEntity(new UrlEncodedFormEntity(pairs));
+			response = client.execute(post);
+
+		} catch (Exception e) {
+			Log.e("Login", "Error executing HTTP Request: " + e.toString());
+			e.printStackTrace();
+		}
+		return response;
 	}
 
 	@Override
 	protected String doInBackground(String... params) {
-		testDownload();
-
 		return null;
 	}
 	
