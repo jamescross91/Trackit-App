@@ -23,6 +23,8 @@ public class LocationService extends Service {
 	private NotificationManager notifManager;
 	private Notification notif;
 	private NotificationCompat.Builder notifBuilder;
+	
+	private static final int ONGOING_NOTIFICATION = 1;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -72,13 +74,12 @@ public class LocationService extends Service {
 		notifManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		notifBuilder = new NotificationCompat.Builder(this);
 
-		notifBuilder.setContentTitle("TrackiT Location");
-		notifBuilder.setContentText("Some application information");
-		notifBuilder.setSmallIcon(R.drawable.icon);
-		notifBuilder.setVibrate(new long[] { 1000, 1000, 1000, 1000, 1000 });
-
+		notifBuilder.setContentTitle(getText(R.string.trackit));
+		notifBuilder.setContentText(getText(R.string.notif_text));
+		notifBuilder.setSmallIcon(R.drawable.icon);		
 		notif = notifBuilder.build();
-		notifManager.notify(0, notif);
+
+		startForeground(ONGOING_NOTIFICATION, notif);
 
 		Log.e("LocationService", "...done!");
 	}

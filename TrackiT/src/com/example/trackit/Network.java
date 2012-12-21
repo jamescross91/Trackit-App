@@ -48,8 +48,8 @@ public abstract class Network extends AsyncTask<String, Void, String> {
 
 		HttpClient client = new MyHttpClient(thisContext);
 		HttpParams params = client.getParams();
-		HttpConnectionParams.setConnectionTimeout(params, 2000);
-		HttpConnectionParams.setSoTimeout(params, 1000);
+		HttpConnectionParams.setConnectionTimeout(params, 30 * 1000);
+		HttpConnectionParams.setSoTimeout(params, 15 * 1000);
 
 		HttpPost post = new HttpPost(URL);
 		post.setHeader("User-Agent", "Custom Header");

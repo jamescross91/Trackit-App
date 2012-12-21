@@ -12,5 +12,6 @@
     <string name="authentication">authentication</string>
     <string name="title_activity_track_location">Track Location</string>
     <string name="trackit">TrackiT</string>
+    <string name="notif_text">Trackit Location Monitoring Active</string>
 
 </resources>

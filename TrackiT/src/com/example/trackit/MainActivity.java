@@ -7,11 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+
+import com.google.android.gcm.GCMRegistrar;
 
 public class MainActivity extends Activity {
 
@@ -23,6 +26,17 @@ public class MainActivity extends Activity {
 		SharedPreferences auth = getSharedPreferences(
 				getString(R.string.authentication), 0);
 		boolean authenticated = auth.getBoolean("authenticated", false);
+		
+		GCMRegistrar.checkDevice(this);
+		GCMRegistrar.checkManifest(this);
+		final String regId = GCMRegistrar.getRegistrationId(this);
+		if (regId.equals("")) {
+		  GCMRegistrar.register(this, "714729619832");
+		} else {
+		  Log.v("GCM", "Already registered");
+		}
+		
+		String reg = GCMRegistrar.getRegistrationId(this);
 		
 		if (authenticated) {
 			Intent mapIntent = new Intent(this, TrackLocationActivity.class);

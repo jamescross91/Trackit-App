@@ -5,10 +5,13 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.location.Location;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 
 public class TrackiTLocation extends Network {
 
@@ -29,6 +32,22 @@ public class TrackiTLocation extends Network {
 		altitude = this.location.getAltitude();
 		bearing = this.location.getBearing();
 		speed = this.location.getSpeed();		
+	}
+	
+	public JSONObject toJSON(){
+		JSONObject object = new JSONObject();
+		try {
+			object.put("latitude", latitude);
+			object.put("longitude", longitude);
+			object.put("accuracy", accuracy);
+			object.put("altitude", altitude);
+			object.put("bearing", bearing);
+			object.put("speed", speed);
+		} catch (JSONException e) {
+			Log.e("JSON Conversion", e.getMessage());
+		}
+		
+		return object;
 	}
 	
 	private void persistLocation(){

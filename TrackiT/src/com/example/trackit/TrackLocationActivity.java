@@ -1,5 +1,6 @@
 package com.example.trackit;
 
+import java.util.Date;
 import java.util.List;
 
 import android.content.BroadcastReceiver;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.Window;
 import android.widget.Toast;
@@ -42,18 +44,19 @@ public class TrackLocationActivity extends MapActivity {
 		drawable = this.getResources().getDrawable(R.drawable.marker);
 		itemizedOverlay = new MapOverlay(drawable, this);
 
-		GeoPoint point = new GeoPoint(19240000, -99120000);
-		OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!",
-				"I'm in Mexico City!");
+		//GeoPoint point = new GeoPoint(19240000, -99120000);
+		//OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!",
+		//		"I'm in Mexico City!");
 
-		itemizedOverlay.addOverlay(overlayitem);
-		mapOverlays.add(itemizedOverlay);
+		//itemizedOverlay.addOverlay(overlayitem);
+		//mapOverlays.add(itemizedOverlay);
+		
+		registerReceiver(receiver, new IntentFilter("TrackiTLoc"));
 	}
 
 	@Override
 	protected void onPause() {
 		super.onPause();
-		unregisterReceiver(receiver);
 	}
 
 	@Override
@@ -78,8 +81,12 @@ public class TrackLocationActivity extends MapActivity {
 
 				GeoPoint point = new GeoPoint((int) (lat * 1E6),
 						(int) (lng * 1E6));
+				
+				Date d = new Date();
+				CharSequence s  = DateFormat.format("kk:mm on EEEE, MMMM d, yyyy ", d.getTime());
+				
 				OverlayItem overlayitem = new OverlayItem(point,
-						"Hola, Mundo!", "I'm in Mexico City!");
+						"TrackiT Location",  "Sent to server at: " + s);
 
 				itemizedOverlay.addOverlay(overlayitem);
 				mapOverlays.add(itemizedOverlay);
