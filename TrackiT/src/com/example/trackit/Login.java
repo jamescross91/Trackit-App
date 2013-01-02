@@ -23,6 +23,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.google.android.gcm.GCMRegistrar;
+
 public class Login extends Network {
 
 	private String username;
@@ -49,6 +51,17 @@ public class Login extends Network {
 		telManager = (TelephonyManager) thisContext
 				.getSystemService(Context.TELEPHONY_SERVICE);
 
+		GCMRegistrar.checkDevice(thisContext);
+		GCMRegistrar.checkManifest(thisContext);
+		final String regId = GCMRegistrar.getRegistrationId(thisContext);
+		if (regId.equals("")) {
+		  GCMRegistrar.register(thisContext, thisContext.getString(R.string.gcm_project_id));
+		} else {
+		  Log.v("GCM", "Already registered");
+		}
+		
+		String reg = GCMRegistrar.getRegistrationId(thisContext);
+		
 		// TODO use a JSON object instead
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("username", username));
@@ -58,7 +71,8 @@ public class Login extends Network {
 		pairs.add(new BasicNameValuePair("OS", "Android"));
 		pairs.add(new BasicNameValuePair("phoneNumber", "0"));
 		pairs.add(new BasicNameValuePair("deviceID", telManager.getDeviceId()));
-
+		pairs.add(new BasicNameValuePair("gcm_token", reg));
+		
 		return networkExec(formatLoginURL(), pairs);
 	}
 

@@ -13,5 +13,6 @@
     <string name="title_activity_track_location">Track Location</string>
     <string name="trackit">TrackiT</string>
     <string name="notif_text">Trackit Location Monitoring Active</string>
+    <string name="gcm_project_id">714729619832</string>
 
 </resources>
