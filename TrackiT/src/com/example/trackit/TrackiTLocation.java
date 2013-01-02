@@ -9,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -22,6 +23,7 @@ public class TrackiTLocation extends Network {
 	private double altitude; 
 	private double bearing; 
 	private double speed;
+	private String authToken;
 	
 	public TrackiTLocation(Context context, Location location) {
 		super(context);
@@ -31,7 +33,10 @@ public class TrackiTLocation extends Network {
 		accuracy = this.location.getAccuracy();
 		altitude = this.location.getAltitude();
 		bearing = this.location.getBearing();
-		speed = this.location.getSpeed();		
+		speed = this.location.getSpeed();
+		SharedPreferences auth = context.getSharedPreferences(
+				context.getString(R.string.authentication), 0);
+		 authToken = auth.getString("authToken", "");
 	}
 	
 	public JSONObject toJSON(){
@@ -64,6 +69,7 @@ public class TrackiTLocation extends Network {
 		pairs.add(new BasicNameValuePair("bearing", String.valueOf(bearing)));
 		pairs.add(new BasicNameValuePair("speed", String.valueOf(speed)));		
 		pairs.add(new BasicNameValuePair("deviceID", telManager.getDeviceId()));
+		pairs.add(new BasicNameValuePair("authToken", authToken));
 		
 		networkExec(formatLocUrl(), pairs);
 	}
