@@ -55,11 +55,6 @@ public class TrackLocationActivity extends MapActivity {
 	}
 
 	@Override
-	protected void onPause() {
-		super.onPause();
-	}
-
-	@Override
 	protected void onResume() {
 		super.onResume();
 		registerReceiver(receiver, new IntentFilter("TrackiTLoc"));
