@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.provider.Settings.Secure;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -58,6 +59,9 @@ public class Login extends Network {
 		
 		String reg = GCMRegistrar.getRegistrationId(thisContext);
 		
+		String android_id = Secure.getString(thisContext.getContentResolver(),
+                Secure.ANDROID_ID);
+		
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("username", username));
 		pairs.add(new BasicNameValuePair("password", password));
@@ -65,6 +69,7 @@ public class Login extends Network {
 		pairs.add(new BasicNameValuePair("model", android.os.Build.MODEL));
 		pairs.add(new BasicNameValuePair("OS", "Android"));
 		pairs.add(new BasicNameValuePair("phoneNumber", "0"));
+		pairs.add(new BasicNameValuePair("device_id", android_id));
 		pairs.add(new BasicNameValuePair("gcm_token", reg));
 		
 		return networkExec(formatLoginURL(), pairs);
