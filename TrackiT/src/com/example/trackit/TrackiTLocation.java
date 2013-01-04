@@ -57,9 +57,9 @@ public class TrackiTLocation extends Network {
 	
 	private void persistLocation(){
 		
-		TelephonyManager telManager;
-		telManager = (TelephonyManager) thisContext
-				.getSystemService(Context.TELEPHONY_SERVICE);
+		SharedPreferences auth = thisContext.getSharedPreferences(
+				thisContext.getString(R.string.authentication), 0);
+		String deviceID = auth.getString("device_id", "");
 		
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("latitude", String.valueOf(latitude)));
@@ -68,7 +68,7 @@ public class TrackiTLocation extends Network {
 		pairs.add(new BasicNameValuePair("altitude", String.valueOf(altitude)));
 		pairs.add(new BasicNameValuePair("bearing", String.valueOf(bearing)));
 		pairs.add(new BasicNameValuePair("speed", String.valueOf(speed)));		
-		pairs.add(new BasicNameValuePair("deviceID", telManager.getDeviceId()));
+		pairs.add(new BasicNameValuePair("deviceID", deviceID));
 		pairs.add(new BasicNameValuePair("authToken", authToken));
 		
 		networkExec(formatLocUrl(), pairs);

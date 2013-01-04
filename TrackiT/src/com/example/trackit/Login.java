@@ -16,7 +16,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -47,9 +46,6 @@ public class Login extends Network {
 	}
 
 	public HttpResponse authenticateLogin() {
-		TelephonyManager telManager;
-		telManager = (TelephonyManager) thisContext
-				.getSystemService(Context.TELEPHONY_SERVICE);
 
 		GCMRegistrar.checkDevice(thisContext);
 		GCMRegistrar.checkManifest(thisContext);
@@ -62,7 +58,6 @@ public class Login extends Network {
 		
 		String reg = GCMRegistrar.getRegistrationId(thisContext);
 		
-		// TODO use a JSON object instead
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("username", username));
 		pairs.add(new BasicNameValuePair("password", password));
@@ -70,7 +65,6 @@ public class Login extends Network {
 		pairs.add(new BasicNameValuePair("model", android.os.Build.MODEL));
 		pairs.add(new BasicNameValuePair("OS", "Android"));
 		pairs.add(new BasicNameValuePair("phoneNumber", "0"));
-		pairs.add(new BasicNameValuePair("deviceID", telManager.getDeviceId()));
 		pairs.add(new BasicNameValuePair("gcm_token", reg));
 		
 		return networkExec(formatLoginURL(), pairs);
@@ -85,6 +79,7 @@ public class Login extends Network {
 
 	private boolean processResponse(HttpResponse response) {
 		String authToken = new String();
+		String deviceID = new String();
 		boolean success = false;
 
 		try {
@@ -93,6 +88,7 @@ public class Login extends Network {
 			JSONObject json = new JSONObject(responseBody);
 			authToken = json.getString("authToken");
 			success = json.getBoolean("loginSuccess");
+			deviceID = json.getString("device_id");
 		} catch (Exception e) {
 			Log.e("Trackit Login", "Failed to parse Json object");
 			e.printStackTrace();
@@ -105,6 +101,7 @@ public class Login extends Network {
 					thisContext.getString(R.string.authentication), 0);
 			SharedPreferences.Editor editor = prefs.edit();
 			editor.putString("authToken", authToken);
+			editor.putString("device_id", deviceID);
 			editor.putBoolean("authenticated", true);
 
 			editor.commit();
