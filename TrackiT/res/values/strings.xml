@@ -9,6 +9,7 @@
     <string name="vpn_root">http://25.126.59.12:2610</string>
     <string name="login_url">/device/child/login</string>
     <string name="location_url">/device/child/location</string>
+     <string name="gcm_update_url">/device/gcm/update</string>
     <string name="authentication">authentication</string>
     <string name="title_activity_track_location">Track Location</string>
     <string name="trackit">TrackiT</string>

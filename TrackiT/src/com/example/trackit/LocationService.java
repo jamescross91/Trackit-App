@@ -40,6 +40,8 @@ public class LocationService extends Service {
 		setupNotif();
 		super.onCreate();
 
+		updateGCM();
+		
 		AlarmManager mgr = (AlarmManager) getSystemService(ALARM_SERVICE);
 		Intent intent = new Intent(this, LocationPoller.class);
 
@@ -82,5 +84,10 @@ public class LocationService extends Service {
 		startForeground(ONGOING_NOTIFICATION, notif);
 
 		Log.e("LocationService", "...done!");
+	}
+	
+	private void updateGCM(){
+		GCMUpdate update = new GCMUpdate(this);
+		update.execute(new String());
 	}
 }
