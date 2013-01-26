@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class TrackiTLocation extends Network {
