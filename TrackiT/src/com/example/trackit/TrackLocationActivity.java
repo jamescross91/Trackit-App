@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.Window;
 import android.widget.Toast;
@@ -53,6 +54,22 @@ public class TrackLocationActivity extends MapActivity {
 		
 		registerReceiver(receiver, new IntentFilter("TrackiTLoc"));
 	}
+	
+	@Override
+	protected void onPause(){
+		super.onPause();
+		if(receiver != null){
+			unregisterReceiver(receiver);
+		}
+	}
+	
+	@Override
+	protected void onDestroy(){
+		super.onDestroy();
+		if(receiver != null){
+			unregisterReceiver(receiver);
+		}
+	}
 
 	@Override
 	protected void onResume() {
@@ -65,12 +82,24 @@ public class TrackLocationActivity extends MapActivity {
 		getMenuInflater().inflate(R.menu.activity_track_location, menu);
 		return true;
 	}
+	
+	@Override
+	public void onBackPressed() {
+
+	}
+	
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event){
+		return true;
+	}
 
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			if (intent.getAction().equals("TrackiTLoc")) {
 
+				mapOverlays.clear();
+				itemizedOverlay.clearOverlays();
 				double lng = intent.getExtras().getDouble("GEO_LONG");
 				double lat = intent.getExtras().getDouble("GEO_LAT");
 

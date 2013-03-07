@@ -18,9 +18,12 @@ public class LocationReciever extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context context, Intent intent) {
 
+		try{
 		Toast msg1 = Toast.makeText(context, "Poller loc received",
 				Toast.LENGTH_LONG);
 		msg1.show();
+		
+		Log.i("Location poller", "Location recieved, attempting to push to server");
 		
 		Bundle b = intent.getExtras();
 		
@@ -51,6 +54,9 @@ public class LocationReciever extends BroadcastReceiver{
 		  
 		  //Process the location update
 		  onLocationChanged(loc, context);
+		} catch(Exception e){
+			Log.e("Location poller", "An unhandled exception occured: " + e.getMessage());
+		}
 	}
 	
 	private boolean isBetterLocation(Location newLocation) {

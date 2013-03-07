@@ -44,5 +44,9 @@ public class MapOverlay extends ItemizedOverlay<OverlayItem> {
 		overlays.add(overlay);
 		populate();
 	}
+	
+	public void clearOverlays(){
+		overlays.clear();
+	}
 
 }

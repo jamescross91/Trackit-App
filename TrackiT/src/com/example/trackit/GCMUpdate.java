@@ -6,46 +6,51 @@ import java.util.List;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-
-import com.google.android.gcm.GCMRegistrar;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONObject;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.Settings.Secure;
 import android.util.Log;
+import android.widget.Toast;
 
-public class GCMUpdate extends Network{
+import com.google.android.gcm.GCMRegistrar;
+
+public class GCMUpdate extends Network {
+
+	private HttpResponse response;
 
 	public GCMUpdate(Context context) {
 		super(context);
 	}
-	
+
 	public HttpResponse updateToken() {
-		
+
 		GCMRegistrar.checkDevice(thisContext);
 		GCMRegistrar.checkManifest(thisContext);
 		final String regId = GCMRegistrar.getRegistrationId(thisContext);
 		if (regId.equals("")) {
-		  GCMRegistrar.register(thisContext, thisContext.getString(R.string.gcm_project_id));
+			GCMRegistrar.register(thisContext,
+					thisContext.getString(R.string.gcm_project_id));
 		} else {
-		  Log.v("GCM", "Already registered");
+			Log.v("GCM", "Already registered");
 		}
-		
+
 		String reg = GCMRegistrar.getRegistrationId(thisContext);
-		
+
 		String android_id = Secure.getString(thisContext.getContentResolver(),
-                Secure.ANDROID_ID);
-		
+				Secure.ANDROID_ID);
+
 		SharedPreferences auth = thisContext.getSharedPreferences(
 				thisContext.getString(R.string.authentication), 0);
 		String authToken = auth.getString("authToken", "");
 
-		
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("device_id", android_id));
 		pairs.add(new BasicNameValuePair("gcm_token", reg));
 		pairs.add(new BasicNameValuePair("auth_token", authToken));
-		
+
 		return networkExec(formatLoginURL(), pairs);
 	}
 
@@ -55,12 +60,41 @@ public class GCMUpdate extends Network{
 
 		return URL;
 	}
-	
+
 	@Override
 	protected String doInBackground(String... params) {
-		updateToken();
+		this.response = updateToken();
 
 		return null;
+	}
+
+	@Override
+	protected void onPostExecute(String result) {
+		// Get the JSon response from the server
+		String responseBody;
+		try {
+			if (response == null) {
+				Toast.makeText(
+						thisContext,
+						"Failed to update GCM on server updates -  may fail.  Please check your network connection.",
+						Toast.LENGTH_LONG).show();
+			}
+
+			responseBody = EntityUtils.toString(response.getEntity());
+
+			if (responseBody.compareTo("") != 0 && responseBody != null) {
+				JSONObject json = new JSONObject(responseBody);
+				if (json.has("failure")) {
+					Toast.makeText(
+							thisContext,
+							"Failed to update GCM on server -  updates may fail. Please check your network connection.",
+							Toast.LENGTH_LONG).show();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
 }
