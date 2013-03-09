@@ -20,6 +20,7 @@ import com.google.android.gcm.GCMRegistrar;
 public class GCMUpdate extends Network {
 
 	private HttpResponse response;
+	private boolean ok;
 
 	public GCMUpdate(Context context) {
 		super(context);
@@ -64,35 +65,42 @@ public class GCMUpdate extends Network {
 	@Override
 	protected String doInBackground(String... params) {
 		this.response = updateToken();
+		process();
 
 		return null;
 	}
 
 	@Override
 	protected void onPostExecute(String result) {
+		if (ok) {
+			Toast.makeText(thisContext,
+					"Server updated with latest device information",
+					Toast.LENGTH_LONG).show();
+		} else {
+			Toast.makeText(
+					thisContext,
+					"Failed to update the server.  Updates may fail.  Please check your network connection.",
+					Toast.LENGTH_LONG).show();
+		}
+	}
+
+	protected void process() {
 		// Get the JSon response from the server
 		String responseBody;
+		ok = true;
 		try {
 			if (response == null) {
-				Toast.makeText(
-						thisContext,
-						"Failed to update GCM on server updates -  may fail.  Please check your network connection.",
-						Toast.LENGTH_LONG).show();
+				ok = false;
 			}
 
 			responseBody = EntityUtils.toString(response.getEntity());
-
-			if (responseBody.compareTo("") != 0 && responseBody != null) {
-				JSONObject json = new JSONObject(responseBody);
-				if (json.has("failure")) {
-					Toast.makeText(
-							thisContext,
-							"Failed to update GCM on server -  updates may fail. Please check your network connection.",
-							Toast.LENGTH_LONG).show();
-				}
+			JSONObject json = new JSONObject(responseBody);
+			if (json.has("failure")) {
+				ok = false;
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+			ok = false;
 		}
 
 	}
