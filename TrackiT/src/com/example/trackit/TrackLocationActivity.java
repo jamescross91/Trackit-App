@@ -60,6 +60,7 @@ public class TrackLocationActivity extends MapActivity {
 		super.onPause();
 		if(receiver != null){
 			unregisterReceiver(receiver);
+			receiver = null;
 		}
 	}
 	
