@@ -31,7 +31,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 	@Override
 	protected void onMessage(Context context, Intent arg1) {
 		try {
-			
 			Log.i(TAG, "new message= ");
 
 			Bundle bundle = arg1.getExtras();
