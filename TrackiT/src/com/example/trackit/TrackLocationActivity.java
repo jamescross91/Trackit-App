@@ -94,17 +94,6 @@ public class TrackLocationActivity extends MapActivity {
 		return true;
 	}
 	
-	private boolean isServiceRunning(){
-		ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-		
-		for(RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)){
-			if(LocationService.class.getName().equals(service.service.getClassName()))
-				return true;
-		}
-		
-		return false;
-	}
-
 	private BroadcastReceiver receiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -145,10 +134,13 @@ public class TrackLocationActivity extends MapActivity {
 				editor.remove("authenticated");
 				editor.commit();
 				
-				if(!isServiceRunning()){
-					Intent serviceIntent = new Intent(thisActivity, LocationService.class);
-					startService(serviceIntent);
-				}
+				Intent serviceIntent = new Intent(context,
+						LocationService.class);
+				stopService(serviceIntent);
+				
+				Intent serviceIntent2 = new Intent(context,
+						com.commonsware.cwac.locpoll.LocationPollerService.class);
+				stopService(serviceIntent2);
 
 				Intent loginIntent = new Intent(context, MainActivity.class);
 				startActivity(loginIntent);

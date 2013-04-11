@@ -1,5 +1,7 @@
 package com.example.trackit;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Criteria;
@@ -35,14 +37,23 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 			Bundle bundle = arg1.getExtras();
 			Log.i(TAG, "new message= ");
-			
+
 			String deviceDelete = (String) bundle.get(DEVICE_DELETE_KEY);
-			if(deviceDelete != null){
-				Intent deleteIntent = new Intent(context.getString(R.string.device_delete_broadcast_action));
+			if (deviceDelete != null) {
+				Intent deleteIntent = new Intent(
+						context.getString(R.string.device_delete_broadcast_action));
 				deleteIntent.putExtras(bundle);
 				context.sendBroadcast(deleteIntent);
+
+				Intent serviceIntent = new Intent(context,
+						LocationService.class);
+				stopService(serviceIntent);
+				
+				Intent serviceIntent2 = new Intent(context,
+						com.commonsware.cwac.locpoll.LocationPollerService.class);
+				stopService(serviceIntent2);
 			}
-			
+
 			LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 			Criteria crit = new Criteria();
 			crit.setAccuracy(Criteria.ACCURACY_FINE);
